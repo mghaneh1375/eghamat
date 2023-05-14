@@ -1,0 +1,72 @@
+2021-06-08 12:30:05,729 [      0]   INFO -        #com.intellij.idea.Main - ------------------------------------------------------ IDE STARTED ------------------------------------------------------ 
+2021-06-08 12:30:05,780 [     51]   INFO -        #com.intellij.idea.Main - IDE: PhpStorm (build #PS-192.5728.108, 24 Jul 2019 16:47) 
+2021-06-08 12:30:05,782 [     53]   INFO -        #com.intellij.idea.Main - OS: Windows 10 (10.0, amd64) 
+2021-06-08 12:30:05,782 [     53]   INFO -        #com.intellij.idea.Main - JRE: 11.0.3+12-b304.10 (JetBrains s.r.o) 
+2021-06-08 12:30:05,782 [     53]   INFO -        #com.intellij.idea.Main - JVM: 11.0.3+12-b304.10 (OpenJDK 64-Bit Server VM) 
+2021-06-08 12:30:05,783 [     54]   INFO -        #com.intellij.idea.Main - JVM Args: exit -Xms128m -Xmx2034m -XX:ReservedCodeCacheSize=240m -XX:+UseConcMarkSweepGC -XX:SoftRefLRUPolicyMSPerMB=50 -ea -XX:CICompilerCount=2 -Dsun.io.useCanonPrefixCache=false -Djava.net.preferIPv4Stack=true -Djdk.http.auth.tunneling.disabledSchemes="" -XX:+HeapDumpOnOutOfMemoryError -XX:-OmitStackTraceInFastThrow -Djdk.attach.allowAttachSelf -javaagent:D:\PHPSTORM\PhpStorm 2019.2\Patch.jar -Djb.vmOptionsFile=C:\Users\ASUS\.PhpStorm2019.2\config\phpstorm64.exe.vmoptions -Djava.library.path=D:\PHPSTORM\PhpStorm 2019.2\jbr\\bin;D:\PHPSTORM\PhpStorm 2019.2\jbr\\bin\server -Didea.platform.prefix=PhpStorm -Dide.native.launcher=true -Didea.paths.selector=PhpStorm2019.2 -XX:ErrorFile=C:\Users\ASUS\java_error_in_phpstorm_%p.log -XX:HeapDumpPath=C:\Users\ASUS\java_error_in_phpstorm.hprof 
+2021-06-08 12:30:05,788 [     59]   INFO -        #com.intellij.idea.Main - charsets: JNU=Cp1256 file=Cp1256 
+2021-06-08 12:30:05,955 [    226]   INFO -        #com.intellij.idea.Main - JNA library (64-bit) loaded in 166 ms 
+2021-06-08 12:30:06,087 [    358]   INFO - penapi.util.io.win32.IdeaWin32 - Native filesystem for Windows is operational 
+2021-06-08 12:30:06,484 [    755]   INFO - .intellij.util.io.HttpRequests - Application is not initialized yet; Using default SSL configuration to connect to https://www.jetbrains.com/config/IdeaCloudConfig.xml 
+2021-06-08 12:30:08,386 [   2657]   INFO - .cloudConfig.CloudConfigClient - === Get cloud config URL: https://cloudconfig.jetbrains.com/cloudconfig/files === 
+2021-06-08 12:30:18,674 [  12945]   INFO - Config.CloudConfigProviderImpl - Read timed out 
+javax.net.ssl.SSLException: Read timed out
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$10.run(HttpURLConnection.java:1963)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$10.run(HttpURLConnection.java:1958)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getChainedException(HttpURLConnection.java:1957)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1525)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1509)
+	at java.base/java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:527)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:329)
+	at com.jetbrains.cloudconfig.AbstractHttpClient.download(AbstractHttpClient.java:94)
+	at com.jetbrains.cloudconfig.CloudConfigFileClient.list(CloudConfigFileClient.java:192)
+	at com.intellij.idea.cloudConfig.ETagCloudConfigFileClient.list(ETagCloudConfigFileClient.java:38)
+	at com.intellij.idea.cloudConfig.CloudConfigProviderImpl.<init>(CloudConfigProviderImpl.java:56)
+	at com.intellij.idea.MainImpl$1.beforeImportConfigs(MainImpl.java:46)
+	at com.intellij.idea.StartupUtil.prepareAndStart(StartupUtil.java:217)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at com.intellij.idea.MainImpl.start(MainImpl.java:43)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at com.intellij.ide.plugins.MainRunner.lambda$start$0(MainRunner.java:58)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: javax.net.ssl.SSLException: Read timed out
+	at java.base/sun.security.ssl.Alert.createSSLException(Alert.java:127)
+	at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:321)
+	at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:264)
+	at java.base/sun.security.ssl.TransportContext.fatal(TransportContext.java:259)
+	at java.base/sun.security.ssl.SSLTransport.decode(SSLTransport.java:137)
+	at java.base/sun.security.ssl.SSLSocketImpl.decode(SSLSocketImpl.java:1152)
+	at java.base/sun.security.ssl.SSLSocketImpl.readHandshakeRecord(SSLSocketImpl.java:1063)
+	at java.base/sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:402)
+	at java.base/sun.net.www.protocol.https.HttpsClient.afterConnect(HttpsClient.java:567)
+	at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:185)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1581)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1509)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:245)
+	at com.jetbrains.cloudconfig.AbstractHttpClient.download(AbstractHttpClient.java:92)
+	... 16 more
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.base/java.net.SocketInputStream.socketRead0(Native Method)
+	at java.base/java.net.SocketInputStream.socketRead(SocketInputStream.java:115)
+	at java.base/java.net.SocketInputStream.read(SocketInputStream.java:168)
+	at java.base/java.net.SocketInputStream.read(SocketInputStream.java:140)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.read(SSLSocketInputRecord.java:448)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.decode(SSLSocketInputRecord.java:165)
+	at java.base/sun.security.ssl.SSLTransport.decode(SSLTransport.java:108)
+	... 25 more
+2021-06-08 12:30:18,773 [  13044]   INFO - plication.impl.ApplicationImpl - CPU cores: 8; ForkJoinPool.commonPool: java.util.concurrent.ForkJoinPool@637bfe44[Running, parallelism = 7, size = 0, active = 0, running = 0, steals = 0, tasks = 0, submissions = 0]; factory: com.intellij.concurrency.IdeaForkJoinWorkerThreadFactory@41af247b 
+2021-06-08 12:30:39,738 [  34009]   INFO -              #JetprofileSource - JetBrains Account not found for userId= 
+2021-06-08 12:30:40,605 [  34876]   INFO -              #JetprofileSource - JetBrains Account not found for userId= 
+2021-06-08 12:30:43,252 [  37523]   INFO -        #com.intellij.idea.Main - ------------------------------------------------------ IDE SHUTDOWN ------------------------------------------------------ 
+2021-06-08 12:30:43,255 [  37526]   INFO - org.jetbrains.io.BuiltInServer - web server stopped 
