@@ -71,7 +71,8 @@ class AuthController extends Controller
             ]);
         }
 
-        $user->verification_code = rand(1000, 9999);
+        // $user->verification_code = rand(1000, 9999);
+        $user->verification_code = 1111;
         $user->vc_expired_at = Carbon::now()->addMinutes(2);
         $user->save();
 
@@ -111,7 +112,7 @@ class AuthController extends Controller
 
         $token = self::createToken();
 
-        $apiRes = Http::asForm()->post(self::$apiBaseUrl . "checkPhone", [
+        $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "checkPhone", [
             "token" => $token[0],
             "time" => $token[1],
             "phone" => $request["phone"]
@@ -168,7 +169,7 @@ class AuthController extends Controller
 
         $user = $request->user();
         $token = self::createToken();
-        $apiRes = Http::asForm()->post(self::$apiBaseUrl . "addUser", [
+        $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "addUser", [
             "token" => $token[0],
             "time" => $token[1],
             "data" => $request["username"],

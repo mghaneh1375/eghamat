@@ -55,7 +55,8 @@ class UserAssetController extends Controller
         $user = Auth::user();
 
         $token = self::createToken();
-        $apiRes = Http::asForm()->post(self::$apiBaseUrl . "addUser", [
+
+        $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "addUser", [
             "token" => $token[0],
             "time" => $token[1],
             "data" => $title,
@@ -141,7 +142,7 @@ class UserAssetController extends Controller
         }
 
         $token = self::createToken();
-        $apiRes = Http::asForm()->post(self::$apiBaseUrl . "updateUserName", [
+        $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "updateUserName", [
             "token" => $token[0],
             "time" => $token[1],
             "oldUsername" => $userAsset->title,

@@ -127,16 +127,16 @@ class UserFormController extends Controller
 
         if($formField->type == "API") {
 
-            $apiRes = Http::post($formField->options . "_has_exist", [
-                "key" => $data
-            ])->json();
+            // $apiRes = Http::post($formField->options . "_has_exist", [
+            //     "key" => $data
+            // ])->json();
 
-            if($apiRes["status"] == "-1") {
-                $notification = new Notification();
-                $notification->msg = "تقاضای افزودن شهر جدید به نام " . $data;
-                $notification->user_asset_id = $userAssetId;
-                $notification->save();
-            }
+            // if($apiRes["status"] == "-1") {
+            //     $notification = new Notification();
+            //     $notification->msg = "تقاضای افزودن شهر جدید به نام " . $data;
+            //     $notification->user_asset_id = $userAssetId;
+            //     $notification->save();
+            // }
         }
 
         if($user_data != null) {

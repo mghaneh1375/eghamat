@@ -19,7 +19,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        NumConverter::class
+        NumConverter::class,
+        \Fruitcake\Cors\HandleCors::class,
     ];
 
     /**
@@ -59,6 +60,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'num_converter' => NumConverter::class,
-        'admin' => \App\Http\Middleware\admin::class
+        'admin' => \App\Http\Middleware\admin::class,
     ];
 }
