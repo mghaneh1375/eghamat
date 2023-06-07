@@ -15,8 +15,8 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     protected static $sharedKey = "myTokenSharedKeyMammadKia";
-   protected static $apiBaseUrl = "https://mykoochita.com/";
-    // protected static $apiBaseUrl = "https://koochita.com/";
+//    protected static $apiBaseUrl = "https://mykoochita.com/";
+    protected static $apiBaseUrl = "https://koochita.com/";
 
     protected static function createToken() {
         $time = time();
