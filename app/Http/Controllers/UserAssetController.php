@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserAssetDigest;
 use App\models\Asset;
-use App\models\Image;
 use App\models\UserAsset;
 use App\models\UserFormsData;
 use App\models\UserSubAsset;
@@ -12,7 +11,6 @@ use App\Rules\InForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 
 class UserAssetController extends Controller
 {
@@ -54,29 +52,29 @@ class UserAssetController extends Controller
         $title = $request["data"];
         $user = Auth::user();
 
-        $token = self::createToken();
+        // $token = self::createToken();
 
-        $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "addUser", [
-            "token" => $token[0],
-            "time" => $token[1],
-            "data" => $title,
-            "parentUsername" => $user->name,
-        ]);
+        // $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "addUser", [
+        //     "token" => $token[0],
+        //     "time" => $token[1],
+        //     "data" => $title,
+        //     "parentUsername" => $user->name,
+        // ]);
 
-        if(!$apiRes->successful()) {
-            return response()->json([
-                "status" => "-1",
-                "err" => "نام انتخابی شما در سیستم موجود است."
-            ]);
-        }
+        // if(!$apiRes->successful()) {
+        //     return response()->json([
+        //         "status" => "-1",
+        //         "err" => "نام انتخابی شما در سیستم موجود است."
+        //     ]);
+        // }
 
-        $apiRes = $apiRes->json();
-        if(!isset($apiRes["status"]) || $apiRes["status"] != "0") {
-            return response()->json([
-                "status" => "-1",
-                "err" => "نام انتخابی شما در سیستم موجود است."
-            ]);
-        }
+        // $apiRes = $apiRes->json();
+        // if(!isset($apiRes["status"]) || $apiRes["status"] != "0") {
+        //     return response()->json([
+        //         "status" => "-1",
+        //         "err" => "نام انتخابی شما در سیستم موجود است."
+        //     ]);
+        // }
 
         $user_asset = new UserAsset();
         $user_asset->asset_id = $asset->id;
@@ -98,7 +96,9 @@ class UserAssetController extends Controller
      */
     public function show(UserAsset $userAsset) {
 
+        
         $forms = $userAsset->asset->forms()->where("step", ">", 1)->get();
+        
         $userId = $userAsset->user_id;
 
         foreach ($forms as $form) {
@@ -117,7 +117,12 @@ class UserAssetController extends Controller
 
         }
 
-        return view('report.field', ['forms' => $forms]);
+        return response()->json([
+            'status' => '0',
+            'forms' => $forms
+        ]);
+
+        // return view('report.field', ['forms' => $forms]);
     }
 
     /**
@@ -141,28 +146,28 @@ class UserAssetController extends Controller
             ]);
         }
 
-        $token = self::createToken();
-        $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "updateUserName", [
-            "token" => $token[0],
-            "time" => $token[1],
-            "oldUsername" => $userAsset->title,
-            "newUsername" => $title
-        ]);
+        // $token = self::createToken();
+        // $apiRes = Http::asForm()->withoutVerifying()->post(self::$apiBaseUrl . "updateUserName", [
+        //     "token" => $token[0],
+        //     "time" => $token[1],
+        //     "oldUsername" => $userAsset->title,
+        //     "newUsername" => $title
+        // ]);
 
-        if(!$apiRes->successful()) {
-            return response()->json([
-                "status" => "-1",
-                "err" => "نام انتخابی شما در سیستم موجود است."
-            ]);
-        }
+        // if(!$apiRes->successful()) {
+        //     return response()->json([
+        //         "status" => "-1",
+        //         "err" => "نام انتخابی شما در سیستم موجود است."
+        //     ]);
+        // }
 
-        $apiRes = $apiRes->json();
-        if(!isset($apiRes["status"]) || $apiRes["status"] != "0") {
-            return response()->json([
-                "status" => "-1",
-                "err" => "نام انتخابی شما در سیستم موجود است."
-            ]);
-        }
+        // $apiRes = $apiRes->json();
+        // if(!isset($apiRes["status"]) || $apiRes["status"] != "0") {
+        //     return response()->json([
+        //         "status" => "-1",
+        //         "err" => "نام انتخابی شما در سیستم موجود است."
+        //     ]);
+        // }
 
         $userAsset->title = $title;
         $userAsset->save();

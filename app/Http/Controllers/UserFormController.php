@@ -12,10 +12,8 @@ use App\models\UserSubAsset;
 use App\Rules\UserSubAssetExist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
-use Symfony\Component\Console\Input\Input;
 
 class UserFormController extends Controller
 {
@@ -39,117 +37,125 @@ class UserFormController extends Controller
     public function store(UserAsset $user_asset, Request $request) {
 
         $request->validate([
-            "id" => ["bail", "required", "exists:form_fields,id"],
+            "data" => "required|array",
+            "data.*.id" => ["bail", "required", "integer", "exists:form_fields,id"],
             "sub_asset_id" => ['nullable', "exists:assets,id"],
             "user_sub_asset_id" => ['nullable', new UserSubAssetExist(($request->has("sub_asset_id") ? $request["sub_asset_id"] : -1), true)]
         ]);
 
-        $formField = FormField::whereId($request["id"])->first();
-
-        if(!$request->has("data") || empty($request["data"])) {
-
-            if($formField->necessary) {
-                return response()->json([
-                    "status" => -2,
-                    "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-                ]);
-            }
-
-            return response()->json([
-                "status" => "0"
-            ]);
-        }
-
-        if(!$formField->validateData($request["data"])) {
-            return response()->json([
-                "status" => -2,
-                "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-            ]);
-        }
-
-        if(!$request->has("user_sub_asset_id") && !$user_asset->is_in_form($request["id"])) {
-            return response()->json([
-                "status" => -1
-            ]);
-        }
-        else if($request->has("user_sub_asset_id") && $request["user_sub_asset_id"] != -1) {
-            $userSubAsset = UserSubAsset::whereId($request["user_sub_asset_id"])->first();
-            if($userSubAsset == null || !$userSubAsset->is_in_form($request["id"])) {
-                return response()->json([
-                    "status" => -1
-                ]);
-            }
-        }
-
         $uId = Auth::user()->id;
-        $userSubAssetId = null;
         $userAssetId = $user_asset->id;
 
-        if($request->has("user_sub_asset_id")) {
 
-            $userSubAssetId = $request["user_sub_asset_id"];
+        foreach($request['data'] as $d) {
 
-            if ($userSubAssetId == -1 && $request->has("sub_asset_id")) {
-                $userSubAsset = new UserSubAsset();
-                $userSubAsset->user_id = $uId;
-                $userSubAsset->asset_id = $request["sub_asset_id"];
-                $userSubAsset->user_asset_id = $user_asset->id;
-                $userSubAsset->save();
+            $id = $d['id'];
+            $formField = FormField::whereId($id)->first();
 
-                $userAssetId = $userSubAsset->id;
+            if(!isset($d['data']) || empty($d['data'])) {
+
+                if($formField->necessary) {
+                    return response()->json([
+                        "status" => -2,
+                        "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
+                    ]);
+                }
+
             }
-            else if($userSubAssetId != -1)
-                $userAssetId = $userSubAssetId;
-        }
 
-        $isSubAsset = ($userSubAssetId != null);
-        $data = $request["data"];
-        $field = $request["id"];
+            $data = $d["data"];
 
-        $user_data = UserFormsData::whereFieldId($field)->whereUserId($uId)->whereUserAssetId($userAssetId)->firstOr(function () use ($field, $data, $uId, $userAssetId, $isSubAsset, $formField) {
-
-            if(!$formField->validateData($data, true)) {
+            if(!$formField->validateData($data)) {
                 return response()->json([
                     "status" => -2,
                     "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
                 ]);
             }
 
-            $user_data = new UserFormsData();
-            $user_data->field_id = $field;
-            $user_data->user_id = $uId;
-            $user_data->data = $data;
-            $user_data->user_asset_id = $userAssetId;
-            $user_data->is_sub_asset = $isSubAsset;
-            $user_data->save();
-            return null;
-        });
-
-        if($formField->type == "API") {
-
-            // $apiRes = Http::post($formField->options . "_has_exist", [
-            //     "key" => $data
-            // ])->json();
-
-            // if($apiRes["status"] == "-1") {
-            //     $notification = new Notification();
-            //     $notification->msg = "تقاضای افزودن شهر جدید به نام " . $data;
-            //     $notification->user_asset_id = $userAssetId;
-            //     $notification->save();
+            // if(!$request->has("user_sub_asset_id") && !$user_asset->is_in_form($request["id"])) {
+            //     return response()->json([
+            //         "status" => -1
+            //     ]);
             // }
-        }
+            // else if($request->has("user_sub_asset_id") && $request["user_sub_asset_id"] != -1) {
+            //     $userSubAsset = UserSubAsset::whereId($request["user_sub_asset_id"])->first();
+            //     if($userSubAsset == null || !$userSubAsset->is_in_form($request["id"])) {
+            //         return response()->json([
+            //             "status" => -1
+            //         ]);
+            //     }
+            // }
 
-        if($user_data != null) {
-            if($data != $user_data->data && !$formField->validateData($data, true)) {
-                return response()->json([
-                    "status" => -2,
-                    "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-                ]);
+            $userSubAssetId = null;
+
+            // if($request->has("user_sub_asset_id")) {
+
+            //     $userSubAssetId = $request["user_sub_asset_id"];
+
+            //     if ($userSubAssetId == -1 && $request->has("sub_asset_id")) {
+            //         $userSubAsset = new UserSubAsset();
+            //         $userSubAsset->user_id = $uId;
+            //         $userSubAsset->asset_id = $request["sub_asset_id"];
+            //         $userSubAsset->user_asset_id = $user_asset->id;
+            //         $userSubAsset->save();
+
+            //         $userAssetId = $userSubAsset->id;
+            //     }
+            //     else if($userSubAssetId != -1)
+            //         $userAssetId = $userSubAssetId;
+            // }
+
+            $isSubAsset = ($userSubAssetId != null);
+            $field = $id;
+
+            $user_data = UserFormsData::whereFieldId($field)->whereUserId($uId)->whereUserAssetId($userAssetId)->firstOr(function () use ($field, $data, $uId, $userAssetId, $isSubAsset, $formField) {
+
+                if(!$formField->validateData($data, true)) {
+                    return response()->json([
+                        "status" => -2,
+                        "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
+                    ]);
+                }
+
+                $user_data = new UserFormsData();
+                $user_data->field_id = $field;
+                $user_data->user_id = $uId;
+                $user_data->data = $data;
+                $user_data->user_asset_id = $userAssetId;
+                $user_data->is_sub_asset = $isSubAsset;
+                $user_data->save();
+                return null;
+            });
+
+            if($formField->type == "API") {
+
+                // $apiRes = Http::post($formField->options . "_has_exist", [
+                //     "key" => $data
+                // ])->json();
+
+                // if($apiRes["status"] == "-1") {
+                //     $notification = new Notification();
+                //     $notification->msg = "تقاضای افزودن شهر جدید به نام " . $data;
+                //     $notification->user_asset_id = $userAssetId;
+                //     $notification->save();
+                // }
             }
-            $user_data->data = $data;
-            $user_data->save();
-        }
 
+            if($user_data != null) {
+                
+                if($data != $user_data->data && !$formField->validateData($data, true)) {
+                    return response()->json([
+                        "status" => -2,
+                        "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
+                    ]);
+                }
+
+                $user_data->data = $data;
+                $user_data->save();
+            }
+
+        }
+        
         return response()->json([
             "status" => 0,
             "id" => $userAssetId

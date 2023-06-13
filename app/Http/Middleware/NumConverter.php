@@ -16,13 +16,16 @@ class NumConverter
      */
     public function handle($request, Closure $next)
     {
-        foreach ($request->all() as $key => $value)
-            $request[$key] = $this->translatePersian($value);
+        foreach ($request->all() as $key => $value) {
+            if($key != 'data')
+                $request[$key] = $this->translatePersian($value);
+        }
 
         return $next($request);
     }
 
     function translatePersian($str) {
+
         $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         $arabic = ['٩', '٨', '٧', '٦', '٥', '٤', '٣', '٢', '١','٠'];
 
