@@ -45,7 +45,39 @@ class UserFormController extends Controller
 
         $uId = Auth::user()->id;
         $userAssetId = $user_asset->id;
+        $userSubAsset = null;
+        $userSubAssetId = null;
 
+        if($request->has("user_sub_asset_id")) {
+
+            $userSubAssetId = $request["user_sub_asset_id"];
+
+            if($request["user_sub_asset_id"] != -1) {
+                $userSubAsset = UserSubAsset::whereId($request["user_sub_asset_id"])->first();
+                if($userSubAsset == null) {
+                    return response()->json([
+                        "status" => -1
+                    ]);
+                }
+            }
+        }
+
+
+        if($userSubAssetId != null) {
+            if ($userSubAssetId == -1 && $request->has("sub_asset_id")) {
+                $userSubAsset = new UserSubAsset();
+                $userSubAsset->user_id = $uId;
+                $userSubAsset->asset_id = $request["sub_asset_id"];
+                $userSubAsset->user_asset_id = $user_asset->id;
+                $userSubAsset->save();
+
+                $userAssetId = $userSubAsset->id;
+            }
+            else if($userSubAssetId != -1)
+                $userAssetId = $userSubAssetId;
+        }
+
+        $isSubAsset = ($userSubAssetId != null);
 
         foreach($request['data'] as $d) {
 
@@ -72,40 +104,21 @@ class UserFormController extends Controller
                 ]);
             }
 
-            // if(!$request->has("user_sub_asset_id") && !$user_asset->is_in_form($request["id"])) {
-            //     return response()->json([
-            //         "status" => -1
-            //     ]);
-            // }
-            // else if($request->has("user_sub_asset_id") && $request["user_sub_asset_id"] != -1) {
-            //     $userSubAsset = UserSubAsset::whereId($request["user_sub_asset_id"])->first();
-            //     if($userSubAsset == null || !$userSubAsset->is_in_form($request["id"])) {
-            //         return response()->json([
-            //             "status" => -1
-            //         ]);
-            //     }
-            // }
+            if(!$request->has("user_sub_asset_id") && !$user_asset->is_in_form($id)) {
+                return response()->json([
+                    "status" => -1
+                ]);
+            }
 
-            $userSubAssetId = null;
+            else if($userSubAsset != null && !$userSubAsset->is_in_form($id)) {
+                return response()->json([
+                    "status" => -1
+                ]);
+            }
+        }
 
-            // if($request->has("user_sub_asset_id")) {
+        foreach($request['data'] as $d) {
 
-            //     $userSubAssetId = $request["user_sub_asset_id"];
-
-            //     if ($userSubAssetId == -1 && $request->has("sub_asset_id")) {
-            //         $userSubAsset = new UserSubAsset();
-            //         $userSubAsset->user_id = $uId;
-            //         $userSubAsset->asset_id = $request["sub_asset_id"];
-            //         $userSubAsset->user_asset_id = $user_asset->id;
-            //         $userSubAsset->save();
-
-            //         $userAssetId = $userSubAsset->id;
-            //     }
-            //     else if($userSubAssetId != -1)
-            //         $userAssetId = $userSubAssetId;
-            // }
-
-            $isSubAsset = ($userSubAssetId != null);
             $field = $id;
 
             $user_data = UserFormsData::whereFieldId($field)->whereUserId($uId)->whereUserAssetId($userAssetId)->firstOr(function () use ($field, $data, $uId, $userAssetId, $isSubAsset, $formField) {
@@ -125,6 +138,7 @@ class UserFormController extends Controller
                 $user_data->is_sub_asset = $isSubAsset;
                 $user_data->save();
                 return null;
+                
             });
 
             if($formField->type == "API") {
