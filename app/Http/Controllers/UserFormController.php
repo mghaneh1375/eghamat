@@ -78,11 +78,13 @@ class UserFormController extends Controller
         }
 
         $isSubAsset = ($userSubAssetId != null);
+        $formFields = [];
 
         foreach($request['data'] as $d) {
 
             $id = $d['id'];
             $formField = FormField::whereId($id)->first();
+            array_push($formFields, $formField);
 
             if(!isset($d['data']) || empty($d['data'])) {
 
@@ -115,20 +117,26 @@ class UserFormController extends Controller
                     "status" => -1
                 ]);
             }
+
+            if(!$formField->validateData($data, true)) {
+                return response()->json([
+                    "status" => -2,
+                    "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
+                ]);
+            }
+
         }
+
+        $i = -1;
 
         foreach($request['data'] as $d) {
 
+            $i++;
+            $formField = $formFields[$i];
+            $id = $d['id'];
             $field = $id;
 
-            $user_data = UserFormsData::whereFieldId($field)->whereUserId($uId)->whereUserAssetId($userAssetId)->firstOr(function () use ($field, $data, $uId, $userAssetId, $isSubAsset, $formField) {
-
-                if(!$formField->validateData($data, true)) {
-                    return response()->json([
-                        "status" => -2,
-                        "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-                    ]);
-                }
+            $user_data = UserFormsData::whereFieldId($field)->whereUserId($uId)->whereUserAssetId($userAssetId)->firstOr(function () use ($field, $data, $uId, $userAssetId, $isSubAsset) {
 
                 $user_data = new UserFormsData();
                 $user_data->field_id = $field;
@@ -156,14 +164,6 @@ class UserFormController extends Controller
             }
 
             if($user_data != null) {
-                
-                if($data != $user_data->data && !$formField->validateData($data, true)) {
-                    return response()->json([
-                        "status" => -2,
-                        "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-                    ]);
-                }
-
                 $user_data->data = $data;
                 $user_data->save();
             }
