@@ -135,6 +135,7 @@ class UserFormController extends Controller
             $formField = $formFields[$i];
             $id = $d['id'];
             $field = $id;
+            $data = $d['data'];
 
             $user_data = UserFormsData::whereFieldId($field)->whereUserId($uId)->whereUserAssetId($userAssetId)->firstOr(function () use ($field, $data, $uId, $userAssetId, $isSubAsset) {
 
