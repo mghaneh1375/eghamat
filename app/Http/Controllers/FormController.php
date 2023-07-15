@@ -155,9 +155,9 @@ class FormController extends Controller
         foreach ($fields as $field) {
 
             if($userAssetId == -1)
-                $field->date = null;
+                $field->data = null;
 
-            if($field->date != null) {
+            if($field->data != null) {
                 $update = true;
                 break;
             }
