@@ -12,10 +12,7 @@
 */
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\FormController;
-use App\Http\Controllers\FormFieldController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserAssetController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +29,7 @@ Route::post("asset/{asset}/edit", [AssetController::class, 'edit']);
 
 Route::resource('asset.form', FormController::class)->shallow()->except('update', 'create');
 Route::resource('form.form_field', FormFieldController::class)->shallow()->except('update', 'show', 'create');
+Route::resource('asset.subAsset', SubAssetController::class)->shallow()->except('update', 'create');
 
 Route::group(["prefix" => "report", "middleware" => ['auth', 'admin']], function () {
 

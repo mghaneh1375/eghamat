@@ -39,7 +39,7 @@ class AuthController extends Controller
         if($user == null)
             return $this->signIn("نام کاربری و یا رمزعبور اشتباه است.");
 
-        if($request["password"] != "Mg22743823")
+        if($request["password"] != "123456")
             return $this->signIn("نام کاربری و یا رمزعبور اشتباه است.");
 
         Auth::login($user);
