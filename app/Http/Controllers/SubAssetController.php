@@ -10,62 +10,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 
-class AssetController extends Controller {
+class SubAssetController extends Controller {
 
-//    public function __construct()
-//    {
-//        $this->authorizeResource(Asset::class);
-//    }
-
-    public function getVillage(Request $request) {
-
-        $request->validate([
-            "param" => "required"
-        ]);
-
-        $res = DB::connection("mysql2")->select("select name from state where name like '%" . $request["param"] . "%'");
-
-        if($res != null && count($res) > 0) {
-            $res = $res[0];
-            return response()->json([
-                "status" => "0",
-                "id" => $res->id,
-                "name" => $res->name,
-                "city" => $res->city
-            ]);
-        }
-        else {
-            return response()->json([
-                "status" => "1"
-            ]);
-        }
-    }
-
-    public function setGeom(Request $request) {
-
-        $request->validate([
-            "id" => "required|integer",
-            "lat" => "required",
-            "lng" => "required"
-        ]);
-
-        DB::connection("mysql2")->update ("update cities set checked = true, x = " . $request["lat"] . ", y = " . $request["lng"] . " where id = " . $request["id"]);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function indexAPI() {
-        return response()->json([
-            'status' => 0,
-            'assets' => AssetDigest::collection(Asset::whereSuperId(-1)->whereHidden(false)->orderBy('view_index', 'asc')->get())
-        ]);
-    }
-
-    public function index() {
-        return view('asset', ['assets' => Asset::whereSuperId(-1)->get()]);
+    public function index(Asset $asset) {
+        return view('asset', ['assets' => Asset::whereSuperId($asset->id)->get()]);
     }
 
     /**
@@ -108,16 +56,7 @@ class AssetController extends Controller {
         return Redirect::to('asset');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\models\Asset  $asset
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Asset $asset)
-    {
-
-    }
+  
 
     /**
      * Update the specified resource in storage.
