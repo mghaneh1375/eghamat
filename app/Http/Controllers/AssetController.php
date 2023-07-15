@@ -61,7 +61,7 @@ class AssetController extends Controller {
     public function indexAPI() {
         return response()->json([
             'status' => 0,
-            'assets' => AssetDigest::collection(Asset::whereSuperId(-1)->whereHidden(false)->orderBy('view_index', 'asc')->get())
+            'assets' => AssetDigest::collection(Asset::whereSuperId(-1)->orderBy('view_index', 'asc')->get())
         ]);
     }
 
