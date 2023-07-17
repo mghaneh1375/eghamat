@@ -152,7 +152,7 @@ class FormController extends Controller
         }
 
         $update = false;
-        var_dump($fields);
+        // var_dump($fields);
         foreach ($fields as $field) {
 
             if($userAssetId == -1)
@@ -165,7 +165,7 @@ class FormController extends Controller
 
             if($field->options != null) {
                 $field->options = explode('_', $field->options);
-                dd($field->options);
+                // dd($field->options);
                 if(count($field->options) > 0 &&
                     ($field->options[0] == "form") || ($field->options[0] == "sub")
                 ) {
