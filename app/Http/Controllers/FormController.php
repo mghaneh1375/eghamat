@@ -129,17 +129,17 @@ class FormController extends Controller
                     $join->on("form_fields.id", "=", "field_id")->where('user_id', $userId)->where('is_sub_asset', $isSubAsset)->where('user_asset_id', $userAssetId);
                 })->select(['form_fields.id as field_id', 'user_forms_data.id as user_form_data_id', 'multiple', 'name', 'type', 'necessary', 'placeholder', 'half', 'rtl', 'data', 'help', 'force_help', 'options'])->get();
 
-                // if($form->name == "اطلاعات مالک") {
-                //     if($fields[0]->data == null || empty($fields[0]->data)) {
-                //         foreach ($fields as $field) {
-                //             $data = UserFormsData::whereUserId($userId)->whereFieldId($field->field_id)->select('data')->first();
-                //             if($data != null && !empty($data))
-                //                 $field->data = $data->data;
-                //             else
-                //                 break;
-                //         }
-                //     }
-                // }
+                if($form->name == "اطلاعات مالک") {
+                    if($fields[0]->data == null || empty($fields[0]->data)) {
+                        foreach ($fields as $field) {
+                            $data = UserFormsData::whereUserId($userId)->whereFieldId($field->field_id)->select('data')->first();
+                            if($data != null && !empty($data))
+                                $field->data = $data->data;
+                            else
+                                break;
+                        }
+                    }
+                }
             }
         }
         else {
@@ -164,6 +164,7 @@ class FormController extends Controller
 
             if($field->options != null) {
                 $field->options = explode('_', $field->options);
+                dd($field->options);
                 if(count($field->options) > 0 &&
                     ($field->options[0] == "form") || ($field->options[0] == "sub")
                 ) {
