@@ -51,6 +51,7 @@ class UserAssetController extends Controller
             
             foreach($tmp as $itr) {
                 $itr['asset'] = $asset->name;
+                $itr['id'] = $asset->id;
                 array_push($arr, $itr);
             }
 
