@@ -152,6 +152,7 @@ class FormController extends Controller
         }
 
         $update = false;
+        dd($fields);
         foreach ($fields as $field) {
 
             if($userAssetId == -1)
