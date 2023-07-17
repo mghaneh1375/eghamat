@@ -158,14 +158,14 @@ class FormController extends Controller
             if($userAssetId == -1)
                 $field->data = null;
 
-            if($field->data != null) {
-                $update = true;
-                break;
-            }
+            // if($field->data != null) {
+            //     $update = true;
+            //     break;
+            // }
 
             if($field->options != null) {
                 $field->options = explode('_', $field->options);
-                var_dump($field->options);
+                
                 if(count($field->options) > 0 &&
                     ($field->options[0] == "form") || ($field->options[0] == "sub")
                 ) {
