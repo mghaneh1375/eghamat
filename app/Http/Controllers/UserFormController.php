@@ -217,13 +217,14 @@ class UserFormController extends Controller
 
         $uId = Auth::user()->id;
 
-        if(!$request->has("user_sub_sub_asset_id") && !$user_sub_asset->is_in_form($request["id"])) {
-//            return response()->json([
-//                "status" => -1
-//            ]);
-        }
-
-        else if($request->has("user_sub_sub_asset_id")) {
+        // if(!$request->has("user_sub_sub_asset_id") && !$user_sub_asset->is_in_form($request["id"])) {
+        //    return response()->json([
+        //        "status" => -1
+        //    ]);
+        // }
+        // else
+         
+        if($request->has("user_sub_sub_asset_id")) {
             $userSubSubAsset = UserSubAsset::whereId($request["user_sub_sub_asset_id"])->first();
             if($userSubSubAsset == null || $userSubSubAsset->user_id != $uId ||
                 !$userSubSubAsset->is_in_form($request["id"])) {

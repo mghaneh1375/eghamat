@@ -249,13 +249,19 @@ class FormController extends Controller
                             if ($ff->type == "file")
                                 $ff->val = URL::asset("storage/" . str_replace('public/', '', $ff->val));
                             else if ($ff->type == "gallery") {
-                                $ff->val = explode('_', $ff->val)[0];
 
-                                $ff->val = Image::whereId($ff->val)->first();
-                                if ($ff->val == null)
-                                    $ff->val = URL::asset('../storage/default.png');
-                                else
-                                    $ff->val = URL::asset("storage/" . $ff->val->path);
+                                $images = explode('_', $ff->val);
+                                $vals = [];
+
+                                foreach($images as $image) {
+                                    $img = Image::whereId($ff->val)->first();
+                                    if ($img == null)
+                                        array_push($vals, URL::asset('../storage/default.png'));
+                                    else
+                                        array_push($vals, URL::asset("storage/" . $img->path));
+                                }
+                                
+                                $ff->val = $vals;
                             }
                         }
                     }
