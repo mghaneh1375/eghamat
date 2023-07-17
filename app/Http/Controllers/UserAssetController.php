@@ -33,13 +33,28 @@ class UserAssetController extends Controller
         ]);
     }
 
-    public function all() {
+    public function all(Request $request) {
 
         $assets = Asset::all();
         $output = [];
+        $uId = Auth::user()->id;
 
         foreach($assets as $asset) {
-            array_push($output, UserAssetDigest::collection($asset->user_assets()->where('user_id', Auth::user()->id)->get())->additional(['asset' => $asset->name]));
+
+            $userAssets = $asset->user_assets()->where('user_id', $uId)->get();
+
+            if(count($userAssets) == 0)
+                continue;
+
+            $tmp = UserAssetDigest::collection($userAssets)->toArray($request);
+            $arr = [];
+            
+            foreach($tmp as $itr) {
+                $itr['asset'] = $asset->name;
+                array_push($arr, $itr);
+            }
+
+            array_push($output, $arr);
         }
 
         return response()->json([
