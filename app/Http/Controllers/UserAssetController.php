@@ -33,6 +33,21 @@ class UserAssetController extends Controller
         ]);
     }
 
+    public function all() {
+
+        $assets = Asset::all();
+        $output = [];
+
+        foreach($assets as $asset) {
+            array_push($output, UserAssetDigest::collection($asset->user_assets()->where('user_id', Auth::user()->id)->get()));
+        }
+
+        return response()->json([
+            "status" => "0",
+            "assets" => $output
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *

@@ -57,6 +57,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post("user_sub_forms_data/{user_sub_asset}", [UserFormController::class, 'storeSub']);
 
+    Route::get('asset/user_assets', [UserAssetController::class, 'all']);
+
     Route::apiResource('asset.user_asset', UserAssetController::class)->shallow();
 
     Route::get("get_sub_asset/{form}", [UserSubAssetController::class, "sub_asset"]);
