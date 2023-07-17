@@ -254,7 +254,7 @@ class FormController extends Controller
                                 $vals = [];
 
                                 foreach($images as $image) {
-                                    $img = Image::whereId($ff->val)->first();
+                                    $img = Image::whereId($image)->first();
                                     if ($img == null)
                                         array_push($vals, URL::asset('../storage/default.png'));
                                     else
