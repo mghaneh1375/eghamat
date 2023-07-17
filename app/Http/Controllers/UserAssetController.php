@@ -39,7 +39,7 @@ class UserAssetController extends Controller
         $output = [];
 
         foreach($assets as $asset) {
-            array_push($output, UserAssetDigest::collection($asset->user_assets()->where('user_id', Auth::user()->id)->get()));
+            array_push($output, UserAssetDigest::collection($asset->user_assets()->where('user_id', Auth::user()->id)->get())->additional(['asset' => $asset->name]));
         }
 
         return response()->json([
