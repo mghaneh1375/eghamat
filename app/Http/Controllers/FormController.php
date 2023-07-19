@@ -33,7 +33,7 @@ class FormController extends Controller
 
         return response()->json([
             "status" => 0,
-            "forms" => $asset->forms
+            "forms" => $asset->forms()->orderBy('step', 'asc')->get()
         ]);
 
     }
