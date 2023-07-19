@@ -209,7 +209,69 @@ class UserAssetController extends Controller
 
     }
 
+    private function hasUserAnswerToThisField($userFormsData, $fieldId) {
+
+        foreach($userFormsData as $data) {
+
+            if($data->field_id == $fieldId)
+                return true;
+
+        }
+
+        return false;
+        
+    }
+
+    private function checkAsset($asset, $userFormsData) {
+
+        $forms = $asset->forms;
+        $errs = [];
+
+        foreach($forms as $form) {
+
+            if($form->step == 1)
+                continue;
+
+            $fields = $form->form_fields;
+
+            foreach($fields as $field) {
+
+                if($field->type == 'LISTVIEW') {
+
+                    $subAssetId = explode('_', $field->options)[1];
+                    $newErrs = $this->checkAsset(Asset::where('id', $subAssetId)->first(), $userFormsData);
+                    if(count($newErrs) > 0)
+                        array_push($errs, $newErrs);
+
+                    continue;
+                }
+                
+
+                if($field->necessary && !$this->hasUserAnswerToThisField($userFormsData, $field->id))
+                    array_push($errs, $form->name . " : " . $field->name);
+
+            }
+        }
+
+        return $errs;
+    }
+
     public function updateStatus(UserAsset $userAsset) {
+
+        
+        $userAsset = UserAsset::where('id', 76)->first();
+        
+        $userFormsData = $userAsset->user_forms_data()->get();
+        
+        $errs = $this->checkAsset($userAsset->asset, $userFormsData);
+
+        if(count($errs) > 0) {
+            return response()->json([
+                'status' => -2,
+                'errs' => $errs
+            ]);
+        }
+        
 
         $userAsset->status = "PENDING";
         $userAsset->save();
