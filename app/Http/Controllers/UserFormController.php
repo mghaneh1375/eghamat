@@ -79,6 +79,7 @@ class UserFormController extends Controller
 
         $isSubAsset = ($userSubAssetId != null);
         $formFields = [];
+        $errs = [];
 
         foreach($request['data'] as $d) {
 
@@ -89,10 +90,8 @@ class UserFormController extends Controller
             if(!isset($d['data']) || empty($d['data'])) {
 
                 if($formField->necessary) {
-                    return response()->json([
-                        "status" => -2,
-                        "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-                    ]);
+                    array_push($errs, ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err);
+                    continue;
                 }
 
             }
@@ -100,10 +99,8 @@ class UserFormController extends Controller
             $data = $d["data"];
 
             if(!$formField->validateData($data)) {
-                return response()->json([
-                    "status" => -2,
-                    "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-                ]);
+                array_push($errs, ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err);
+                    continue;
             }
 
             if(!$request->has("user_sub_asset_id") && !$user_asset->is_in_form($id)) {
@@ -119,12 +116,16 @@ class UserFormController extends Controller
             }
 
             if(!$formField->validateData($data, true)) {
-                return response()->json([
-                    "status" => -2,
-                    "err" => ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err
-                ]);
+                array_push($errs, ($formField->err == null || empty($formField->err)) ? "داده وارد شده برای فیلد " . $formField->name . " نامعتبر است. " : $formField->err);
             }
 
+        }
+
+        if(count($errs) > 0) {
+            return response()->json([
+                "status" => -2,
+                "errs" => $errs
+            ]);
         }
 
         $i = -1;
