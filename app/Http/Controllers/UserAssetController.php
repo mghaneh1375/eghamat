@@ -222,7 +222,7 @@ class UserAssetController extends Controller
         
     }
 
-    private function checkAsset($asset, $userFormsData) {
+    private function checkAsset($asset, $userFormsData, $userAssetId) {
 
         $forms = $asset->forms;
         $errs = [];
@@ -239,9 +239,8 @@ class UserAssetController extends Controller
                 if($field->type == 'LISTVIEW') {
 
                     $subAssetId = explode('_', $field->options)[1];
-                    $newErrs = $this->checkAsset(Asset::where('id', $subAssetId)->first(), $userFormsData);
-                    if(count($newErrs) > 0)
-                        array_push($errs, $newErrs);
+                    if(UserSubAsset::whereAssetId($subAssetId)->whereUserAssetId($userAssetId)->count() == 0)
+                        array_push($errs, $form->name . " : " . $field->name);
 
                     continue;
                 }
@@ -260,7 +259,7 @@ class UserAssetController extends Controller
         
         $userFormsData = $userAsset->user_forms_data()->get();
         
-        $errs = $this->checkAsset($userAsset->asset, $userFormsData);
+        $errs = $this->checkAsset($userAsset->asset, $userFormsData, $userAsset->id);
 
         if(count($errs) > 0) {
             return response()->json([
