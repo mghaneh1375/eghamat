@@ -22,9 +22,11 @@ class CKEditor extends Controller {
         $path = $request->pic->store('public');
         $path = str_replace('public/', '', $path);
 
+
         return response()->json([
+            'uploaded' => true,
             "status" => "0",
-            "data" => URL::asset("storage/" . $path)
+            "url" => URL::asset("storage/" . $path)
         ]);
     }
 
