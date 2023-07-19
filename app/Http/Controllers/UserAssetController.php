@@ -38,7 +38,7 @@ class UserAssetController extends Controller
         $assets = Asset::all();
         $output = [];
         $uId = Auth::user()->id;
-        dd($uId);
+        var_dump($uId);
 
         foreach($assets as $asset) {
 
