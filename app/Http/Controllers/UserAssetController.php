@@ -257,9 +257,6 @@ class UserAssetController extends Controller
     }
 
     public function updateStatus(UserAsset $userAsset) {
-
-        
-        $userAsset = UserAsset::where('id', 76)->first();
         
         $userFormsData = $userAsset->user_forms_data()->get();
         
