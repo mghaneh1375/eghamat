@@ -148,12 +148,12 @@ class UserAssetController extends Controller
 
         }
 
-        return response()->json([
-            'status' => '0',
-            'forms' => $forms
-        ]);
+        // return response()->json([
+        //     'status' => '0',
+        //     'forms' => $forms
+        // ]);
 
-        // return view('report.field', ['forms' => $forms]);
+        return view('report.field', ['forms' => $forms]);
     }
 
     /**

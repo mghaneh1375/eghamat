@@ -217,7 +217,8 @@ class FormController extends Controller
                 else
                     $subAssets = UserSubAsset::whereUserId($userId)->whereAssetId($field->options[0])->whereUserAssetId($userAsset->id)->select("id")->get();
 
-                $pic = false;
+                    // todo: thinking pic = false
+                $pic = true;
 
                 foreach ($subAssets as $subAsset) {
 
