@@ -28,7 +28,7 @@ Route::resource('asset', AssetController::class)->except('update', "edit", "crea
 Route::post("asset/{asset}/edit", [AssetController::class, 'edit']);
 
 Route::resource('asset.form', FormController::class)->shallow()->except('update', 'create');
-Route::resource('form.form_field', FormFieldController::class)->shallow()->except('update', 'show', 'create');
+Route::resource('form.form_field', FormFieldController::class)->shallow()->except('show', 'create');
 Route::resource('asset.subAsset', SubAssetController::class)->shallow()->except('update', 'create');
 
 Route::group(["prefix" => "report", "middleware" => ['auth', 'admin']], function () {

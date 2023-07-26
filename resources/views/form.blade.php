@@ -4,7 +4,7 @@
     @parent
 
     <script>
-        var delUrl = '{{url('form')}}' + "/";
+        var delUrl = '{{ url('form') }}' + "/";
     </script>
 
 @stop
@@ -24,8 +24,8 @@
                         <span> | </span>
                         <span>&nbsp;&nbsp;&nbsp;</span>
                         <span>asset</span>
-                        <span>{{$asset->name}}</span>
-                        <span onclick="document.location.href = '{{url('asset')}}'" class="back">بازگشت</span>
+                        <span>{{ $asset->name }}</span>
+                        <span onclick="document.location.href = '{{ url('asset') }}'" class="back">بازگشت</span>
                     </h1>
                 </div>
             </div>
@@ -45,20 +45,22 @@
                                 <td>تذکر</td>
                                 <td>عملیات</td>
                             </tr>
-                            @foreach($asset->forms as $form)
-
-                                <tr id="tr_{{$form->id}}">
-                                    <td>{{$form->step}}</td>
-                                    <td>{{$form->name}}</td>
-                                    <td>{{$form->description}}</td>
-                                    <td>{{$form->notice}}</td>
+                            @foreach ($asset->forms as $form)
+                                <tr id="tr_{{ $form->id }}">
+                                    <td>{{ $form->step }}</td>
+                                    <td>{{ $form->name }}</td>
+                                    <td>{{ $form->description }}</td>
+                                    <td>{{ $form->notice }}</td>
                                     <td>
-                                        <a class="btn btn-success" href="{{url('form/' . $form->id . '/form_field')}}">ویرایش فیلد ها</a>
-                                        <button data-toggle="modal" data-target="#editModal" onclick="editForm('{{$form->id}}', '{{$form->name}}', '{{$form->description}}', '{{$form->notice}}', '{{$form->step}}')" class="btn btn-primary">ویرایش فرم</button>
-                                        <button data-toggle="modal" data-target="#removeModal" class="btn btn-danger" onclick="remove('{{$form->id}}')">حذف</button>
+                                        <a class="btn btn-success"
+                                            href="{{ url('form/' . $form->id . '/form_field') }}">ویرایش فیلد ها</a>
+                                        <button data-toggle="modal" data-target="#editModal"
+                                            onclick="editForm('{{ $form->id }}')" class="btn btn-primary">ویرایش
+                                            فرم</button>
+                                        <button data-toggle="modal" data-target="#removeModal" class="btn btn-danger"
+                                            onclick="remove('{{ $form->id }}')">حذف</button>
                                     </td>
                                 </tr>
-
                             @endforeach
 
                         </table>
@@ -120,7 +122,7 @@
         <div class="modal-dialog">
 
             <div class="modal-content">
-                <form method="post" action="{{url('asset/' . $asset->id . '/form')}}">
+                <form method="post" action="{{ url('asset/' . $asset->id . '/form') }}">
 
                     <div class="modal-header">
                         <h4 class="modal-title">افزودن فرم</h4>
@@ -160,15 +162,18 @@
     </div>
 
     <script>
+        var forms = {!! json_encode($asset->forms) !!};
 
-        function editForm(id, n, d, not, s) {
-            $("#editForm").attr("action", "{{url('form/')}}" + "/" + id + "/edit");
-            $("#name").val(n);
-            $("#description").val(d);
-            $("#notice").val(not);
-            $("#step").val(s);
+        function editForm(id) {
+            items = forms.filter(x => x.id == id);
+            for (let i = 0; i < items.length; i++) {
+                $("#editForm").attr("action", "{{ url('form/') }}" + "/" + items[i].id + "/edit");
+                $("#name").val(items[i].name);
+                $("#description").val(items[i].description);
+                $("#notice").val(items[i].notice);
+                $("#step").val(items[i].step);
+            }
         }
-
     </script>
 
 @stop
